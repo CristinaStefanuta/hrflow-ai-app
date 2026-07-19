@@ -1,0 +1,45 @@
+# System Context & Objective
+Build a comprehensive HR-Management web application. The app requires a clean, modern, and professional UI (e.g., Tailwind CSS, shadcn/ui). It must include Role-Based Access Control (RBAC) with two primary user roles: `Admin` and `Employee`. 
+
+Please use a modern full-stack framework (e.g., Next.js with React) and a lightweight database (e.g., SQLite via Prisma or Drizzle) to handle the backend.
+
+# Data Models Needed
+1. **User:** id, name, email, password_hash, role (Admin/Employee), shift_preferences, profile_picture_url, language (EN/DE), phone_number, department.
+2. **Announcement:** id, title, content (HTML/rich text), author_id, created_at.
+3. **Request:** id, user_id, type (Time Off, Equipment, Remote Work, etc.), reason, status (Pending, Approved, Denied), created_at.
+4. **TimeEntry:** id, user_id, type (Clock In, Clock Out, Pause Start, Pause End), timestamp.
+
+# Authentication & Routing
+Implement a secure but straightforward authentication flow (e.g., using NextAuth.js or basic JWT). The application must launch with a Login screen and include a link to a Registration page. Upon successful login, route the user to their respective dashboard based on their role. Secure all internal routes to require authentication.
+
+# Core Features & Tabs
+The application must feature a sidebar or top navigation bar with the following five tabs. The content of these tabs must dynamically change based on whether the logged-in user is an `Admin` or an `Employee`. Wrap UI text strings in a localization library (e.g., next-intl or react-i18next) to support language switching.
+
+## 1. Announcements Tab
+* **Employee View:** A scrolling feed of news posts displaying a title, author, date, and rich content (text and images).
+* **Admin View:** Same as the employee view, but includes a prominent "Create New Announcement" button.
+* **Creation Action (Admin):** Opens a modal/page with an input for the Title and a Rich Text Editor (e.g., TipTap or ReactQuill) allowing text formatting and photo URL embedding.
+
+## 2. Requests Tab
+* **Employee View:** A table showing their historical requests with color-coded status badges (Pending, Approved, Denied), and a "New Request" button that opens a form (dropdown for Type, text area for Reason).
+* **Admin View:** A comprehensive dashboard showing all requests from all employees across the company.
+* **Approval Flow (Admin):** Each pending request must have clear "Accept" and "Deny" action buttons that instantly update the status in the database and UI.
+
+## 3. Clock In/Out Tab (Time Tracking)
+* **Employee Controls:** Prominent buttons to "Start Shift", "Take Pause / Lunch Break", "Resume Shift", and "End Shift" that toggle based on the current active state.
+* **Employee Visual Tracker:** A visually appealing progress bar or circular gauge showing time worked today versus required daily office hours, updating in real-time.
+* **Employee Shift Planner:** A weekly calendar view or list showing their planned shifts for the current Monday-Sunday week.
+* **Admin View:** A read-only live overview of which employees are currently clocked in, on pause, or clocked out today.
+
+## 4. Dashboard (Analytics)
+* **Employee View:** Personalized metrics cards showing total hours worked this week, average time spent in the office, and a pie chart of their Request statuses (Approved vs. Denied vs. Open).
+* **Admin View:** Global metrics cards showing total active employees today, system-wide average office hours, and aggregate analytics on company-wide requests. Use a charting library (e.g., Recharts or Chart.js) for visualization.
+
+
+# Development Instructions
+1. Scaffold the project, set up the database schema, and implement the Registration/Login authentication flow first.
+2. Configure the localization (i18n) provider early so all subsequent UI components can use translation keys.
+3. Build the UI components tab by tab, ensuring mobile responsiveness.
+4. Populate the database with dummy data for Announcements, Requests, and TimeEntries so the charts and feeds are fully testable immediately after registration.
+5.The color scheme should be baby blue with navy blue, navy blue being the call for action color, also make sure that there is enough contrast between the colors.
+6.Use A11Y AAA color contrast.

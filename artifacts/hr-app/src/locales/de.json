@@ -1,0 +1,104 @@
+{
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Bereits ein Konto?",
+    "registerLink": "Erstellen Sie eins",
+    "loginLink": "Stattdessen anmelden",
+    "fullName": "Vollständiger Name",
+    "role": "Rolle",
+    "admin": "Administrator",
+    "employee": "Mitarbeiter",
+    "department": "Abteilung",
+    "language": "Bevorzugte Sprache",
+    "welcomeBack": "Willkommen zurück",
+    "enterDetails": "Geben Sie Ihre Daten ein, um auf Ihr Konto zuzugreifen",
+    "createAccount": "Konto erstellen",
+    "getStarted": "Starten Sie mit HRFlow",
+    "loginSuccess": "Willkommen zurück!",
+    "registerSuccess": "Konto erstellt!"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "announcements": "Ankündigungen",
+    "requests": "Anfragen",
+    "clock": "Zeiterfassung",
+    "logout": "Abmelden"
+  },
+  "dashboard": {
+    "hoursThisWeek": "Stunden diese Woche",
+    "avgDailyHours": "Durchschn. tägliche Stunden",
+    "requestBreakdown": "Anfragestatus",
+    "activeToday": "Heute aktiv",
+    "totalEmployees": "Gesamtmitarbeiter",
+    "avgOfficeHours": "Durchschn. Bürozeiten",
+    "pendingRequests": "Ausstehende Anfragen",
+    "goodMorning": "Guten Morgen"
+  },
+  "announcements": {
+    "title": "Ankündigungen",
+    "new": "Neue Ankündigung",
+    "createTitle": "Ankündigung erstellen",
+    "announcementTitle": "Titel",
+    "content": "Inhalt",
+    "post": "Ankündigung posten",
+    "cancel": "Abbrechen",
+    "empty": "Zurzeit keine Ankündigungen.",
+    "deleteConfirm": "Sind Sie sicher, dass Sie diese Ankündigung löschen möchten?"
+  },
+  "requests": {
+    "title": "Anfragen",
+    "new": "Neue Anfrage",
+    "createTitle": "Anfrage erstellen",
+    "type": "Typ",
+    "reason": "Grund",
+    "submit": "Anfrage einreichen",
+    "cancel": "Abbrechen",
+    "status": {
+      "pending": "Ausstehend",
+      "approved": "Genehmigt",
+      "denied": "Abgelehnt"
+    },
+    "types": {
+      "time_off": "Freizeit",
+      "equipment": "Ausrüstung",
+      "remote_work": "Homeoffice",
+      "other": "Sonstiges"
+    },
+    "approve": "Genehmigen",
+    "deny": "Ablehnen",
+    "empty": "Keine Anfragen gefunden.",
+    "all": "Alle",
+    "employee": "Mitarbeiter",
+    "date": "Datum",
+    "actions": "Aktionen"
+  },
+  "clock": {
+    "title": "Zeiterfassung",
+    "startShift": "Schicht beginnen",
+    "endShift": "Schicht beenden",
+    "takeBreak": "Pause machen",
+    "resumeShift": "Schicht fortsetzen",
+    "attendanceBoard": "Live-Anwesenheit",
+    "shiftPlan": "Dienstplan diese Woche",
+    "hoursWorked": "Geleistete Stunden",
+    "emptyPlan": "Keine Schichten geplant.",
+    "status": {
+      "clocked_in": "Eingestempelt",
+      "on_pause": "In Pause",
+      "clocked_out": "Ausgestempelt",
+      "not_started": "Nicht gestartet"
+    },
+    "weeklySummary": "Wöchentliche Zusammenfassung"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Etwas ist schief gelaufen.",
+    "success": "Erfolg",
+    "save": "Speichern",
+    "delete": "Löschen"
+  }
+}

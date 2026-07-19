@@ -3,20 +3,32 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: HR Management API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: users
+    description: User operations
+  - name: announcements
+    description: Announcement operations
+  - name: requests
+    description: Request operations
+  - name: timeEntries
+    description: Time entry operations
+  - name: analytics
+    description: Analytics and reporting
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +36,687 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── AUTH ───────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: OK
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+
+  # ─── USERS ──────────────────────────────────────────────────────────────────
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users (admin only)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # ─── ANNOUNCEMENTS ──────────────────────────────────────────────────────────
+  /announcements:
+    get:
+      operationId: listAnnouncements
+      tags: [announcements]
+      summary: List all announcements
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Announcement"
+
+    post:
+      operationId: createAnnouncement
+      tags: [announcements]
+      summary: Create announcement (admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnouncementInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+
+  /announcements/{id}:
+    get:
+      operationId: getAnnouncement
+      tags: [announcements]
+      summary: Get announcement by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteAnnouncement
+      tags: [announcements]
+      summary: Delete announcement (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── REQUESTS ───────────────────────────────────────────────────────────────
+  /requests:
+    get:
+      operationId: listRequests
+      tags: [requests]
+      summary: List requests (own for employee, all for admin)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HrRequest"
+
+    post:
+      operationId: createRequest
+      tags: [requests]
+      summary: Submit a new request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HrRequest"
+
+  /requests/{id}/status:
+    patch:
+      operationId: updateRequestStatus
+      tags: [requests]
+      summary: Approve or deny a request (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestStatusUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HrRequest"
+
+  # ─── TIME ENTRIES ────────────────────────────────────────────────────────────
+  /time-entries:
+    get:
+      operationId: listTimeEntries
+      tags: [timeEntries]
+      summary: List time entries for the current user (or all users for admin)
+      parameters:
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TimeEntry"
+
+    post:
+      operationId: createTimeEntry
+      tags: [timeEntries]
+      summary: Clock in/out or pause/resume
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TimeEntryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeEntry"
+
+  /time-entries/current-status:
+    get:
+      operationId: getTimeStatus
+      tags: [timeEntries]
+      summary: Get current clock status for the authenticated user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimeStatus"
+
+  /time-entries/weekly-summary:
+    get:
+      operationId: getWeeklySummary
+      tags: [timeEntries]
+      summary: Get weekly time summary for the authenticated user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklySummary"
+
+  # ─── ANALYTICS ───────────────────────────────────────────────────────────────
+  /analytics/employee-stats:
+    get:
+      operationId: getEmployeeStats
+      tags: [analytics]
+      summary: Get analytics stats for the current employee
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeStats"
+
+  /analytics/admin-stats:
+    get:
+      operationId: getAdminStats
+      tags: [analytics]
+      summary: Get global analytics stats (admin only)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /analytics/clock-overview:
+    get:
+      operationId: getClockOverview
+      tags: [analytics]
+      summary: Get live clock-in status for all employees today (admin only)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeClockStatus"
+
+  /analytics/shift-plan:
+    get:
+      operationId: getShiftPlan
+      tags: [analytics]
+      summary: Get current week shift plan for the authenticated user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ShiftDay"
+
 components:
   schemas:
+    # ─── BASE ─────────────────────────────────────────────────────────────────
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    # ─── AUTH ─────────────────────────────────────────────────────────────────
+    RegisterInput:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 6
+        role:
+          type: string
+          enum: [admin, employee]
+        department:
+          type: string
+        language:
+          type: string
+          enum: [en, de]
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+
+    # ─── USER ─────────────────────────────────────────────────────────────────
+    User:
+      type: object
+      required: [id, name, email, role, language, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, employee]
+        department:
+          type: ["string", "null"]
+        phoneNumber:
+          type: ["string", "null"]
+        profilePictureUrl:
+          type: ["string", "null"]
+        language:
+          type: string
+          enum: [en, de]
+        shiftPreferences:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        department:
+          type: string
+        phoneNumber:
+          type: string
+        profilePictureUrl:
+          type: string
+        language:
+          type: string
+          enum: [en, de]
+        shiftPreferences:
+          type: string
+
+    # ─── ANNOUNCEMENTS ────────────────────────────────────────────────────────
+    Announcement:
+      type: object
+      required: [id, title, content, authorId, authorName, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        authorId:
+          type: integer
+        authorName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    AnnouncementInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+
+    # ─── REQUESTS ─────────────────────────────────────────────────────────────
+    HrRequest:
+      type: object
+      required: [id, userId, userName, type, reason, status, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        type:
+          type: string
+          enum: [time_off, equipment, remote_work, other]
+        reason:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, denied]
+        createdAt:
+          type: string
+          format: date-time
+
+    RequestInput:
+      type: object
+      required: [type, reason]
+      properties:
+        type:
+          type: string
+          enum: [time_off, equipment, remote_work, other]
+        reason:
+          type: string
+
+    RequestStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, denied]
+
+    # ─── TIME ENTRIES ─────────────────────────────────────────────────────────
+    TimeEntry:
+      type: object
+      required: [id, userId, type, timestamp]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+          enum: [clock_in, clock_out, pause_start, pause_end]
+        timestamp:
+          type: string
+          format: date-time
+
+    TimeEntryInput:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [clock_in, clock_out, pause_start, pause_end]
+
+    TimeStatus:
+      type: object
+      required: [status, workedMinutesToday, requiredMinutesPerDay]
+      properties:
+        status:
+          type: string
+          enum: [not_started, clocked_in, on_pause, clocked_out]
+        workedMinutesToday:
+          type: integer
+        requiredMinutesPerDay:
+          type: integer
+        lastEntryAt:
+          type: ["string", "null"]
+          format: date-time
+
+    WeeklySummary:
+      type: object
+      required: [weekStart, weekEnd, totalMinutes, days]
+      properties:
+        weekStart:
+          type: string
+          format: date
+        weekEnd:
+          type: string
+          format: date
+        totalMinutes:
+          type: integer
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/DaySummary"
+
+    DaySummary:
+      type: object
+      required: [date, workedMinutes]
+      properties:
+        date:
+          type: string
+          format: date
+        workedMinutes:
+          type: integer
+
+    # ─── ANALYTICS ────────────────────────────────────────────────────────────
+    EmployeeStats:
+      type: object
+      required: [weeklyHours, avgDailyHours, requestBreakdown]
+      properties:
+        weeklyHours:
+          type: number
+        avgDailyHours:
+          type: number
+        requestBreakdown:
+          $ref: "#/components/schemas/RequestBreakdown"
+
+    AdminStats:
+      type: object
+      required: [activeEmployeesToday, avgOfficeHours, requestBreakdown, totalEmployees, pendingRequests]
+      properties:
+        activeEmployeesToday:
+          type: integer
+        totalEmployees:
+          type: integer
+        avgOfficeHours:
+          type: number
+        pendingRequests:
+          type: integer
+        requestBreakdown:
+          $ref: "#/components/schemas/RequestBreakdown"
+
+    RequestBreakdown:
+      type: object
+      required: [approved, denied, pending]
+      properties:
+        approved:
+          type: integer
+        denied:
+          type: integer
+        pending:
+          type: integer
+
+    EmployeeClockStatus:
+      type: object
+      required: [userId, name, department, status, clockedInAt]
+      properties:
+        userId:
+          type: integer
+        name:
+          type: string
+        department:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [clocked_in, on_pause, clocked_out, not_started]
+        clockedInAt:
+          type: ["string", "null"]
+          format: date-time
+
+    ShiftDay:
+      type: object
+      required: [date, dayName, plannedStart, plannedEnd, isToday]
+      properties:
+        date:
+          type: string
+          format: date
+        dayName:
+          type: string
+        plannedStart:
+          type: string
+        plannedEnd:
+          type: string
+        isToday:
+          type: boolean
